@@ -94,14 +94,17 @@ void *alloc_pages(int rank) {
 }
 
 int return_pages(void *p) {
+    //printf("!!%d??",zone[0].num);
     if (p == NULL) return -EINVAL;
     int start = p - init;
     if (start < 0 || start % PAGE != 0) return -EINVAL;
     start /= PAGE;
+    //printf("!!%d",start);
     if (start >= (1 << (size - 1))) return -EINVAL;
     if (alloc_start[start] == -1) return -EINVAL;
     start = alloc_start[start];
     int rank = alloc_rank[start];
+    //printf("-%d+",rank);
     for (int j = 0; j < (1 << rank); j++) {
         alloc_start[j + start] = -1;
         alloc_rank[j + start] = size - 1;
